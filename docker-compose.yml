@@ -2,6 +2,7 @@ version: '3.3'
 services:
   php:
     image: 'php:fpm-alpine'
+    restart: always
     build: .
     volumes:
       - './litchi:/code'
@@ -9,6 +10,14 @@ services:
       - 9000
     links:
       - db
+  composer:
+    image: library/composer
+    restart: 'no'
+    command: composer install
+    volumes:
+      - ./litchi:/app
+    depends_on:
+      - php
   adminer:
     image: adminer
     restart: always
@@ -18,6 +27,7 @@ services:
       - db
   nginx:
     image: 'nginx:latest'
+    restart: always
     ports:
       - '8000:80'
     volumes:
